@@ -1,24 +1,29 @@
-name: This a workflow title 
-on: [push] # When pushing to any branch then run this action
-# Env variable
+name: test-github-action-cicd
+
+# 소스가 push 되면 호출되도록 함. 
+on: [push]
+
+# 변수 설정
 env:
   DOCKER_REPO_URL: ${{secrets.DOCKER_REPO_URL}} #https://ghcr.io
   DOCKER_REPO: ${{secrets.DOCKER_REPO}}         #ghcr.io
   DOCKER_USER: ${{secrets.DOCKER_USER}}         #deguls
   DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}} #password
   REPO_NAME: ${{secrets.REPO_NAME}}             #test-cicd-img
+  
+# job 설정  
 jobs:
-  push-image-to-docker-hub:  # job name
+  push-image-to-image-registry:  # job name
     runs-on: ubuntu-latest  # runner name : (ubuntu latest version) 
     steps:
     - uses: actions/checkout@v2 # first action : checkout source code
     - name: docker login
-      run: | # log into docker hub account
+      run: | # log into image registry account
         docker login $DOCKER_REPO_URL -u $DOCKER_USER -p $DOCKER_PASSWORD  
     - name: Get current date # get the date of the build
       id: date
       run: echo "::set-output name=date::$(date +'%Y-%m-%d--%M-%S')"
-    - name: Build the Docker image # push The image to the docker hub
+    - name: Build the Docker image # push The image to the image-registry
       run: docker build . --file Dockerfile --tag $DOCKER_REPO/$DOCKER_USER/$REPO_NAME:${{ steps.date.outputs.date }}
     - name: Docker Push
       run: docker push $DOCKER_REPO/$DOCKER_USER/$REPO_NAME:${{ steps.date.outputs.date }}
