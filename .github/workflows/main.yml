@@ -26,4 +26,4 @@ jobs:
     - name: Build the Docker image # push The image to the image-registry
       run: docker build . --file Dockerfile --tag $DOCKER_REPO/$DOCKER_USER/$REPO_NAME:${{ steps.date.outputs.date }}
     - name: Docker Push
-      run: docker push $DOCKER_REPO/$DOCKER_USER/$REPO_NAME:${{ steps.date.outputs.date }}
+      run: docker push ghcr.io/deguls/test-cicd-img:${{ steps.date.outputs.date }}
